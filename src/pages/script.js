@@ -9,6 +9,9 @@ const CMAP_PACKED = true;
 const FABRIC_DPI = 96; // Fabric.js の DPI
 const PDF_DPI = 72; // jsPDF の DPI
 
+const RENDER_SCALE = 1.5;
+const SAVE_SCALE = 1.5;
+
 let pdfDoc = null;
 let fabricCanvas;
 let pdfCanvas;
@@ -61,7 +64,7 @@ function handleFileUpload(e) {
 
 function renderPage(num) {
     pdfDoc.getPage(num).then(function(page) {
-        const scale = 1.5;
+        const scale = RENDER_SCALE;
         const viewport = page.getViewport({ scale: scale });
 
         pdfCanvas.height = viewport.height;
@@ -120,7 +123,14 @@ window.savePDF = async function () {
     const NOTO_SANS_JP = await loadFont('assets/fonts/NotoSansJP-Regular.ttf'); // フォントのURLを指定
 
     pdfDoc.getPage(1).then(function (page) {
-        const scale = 1.5;
+        // 画面の横幅を取得
+        const screenWidth = window.innerWidth;
+        // PDFのデフォルトのviewportを取得してPDFの横幅を取得
+        const pdfViewport = page.getViewport({ scale: 1.0 });
+        const pdfWidth = pdfViewport.width;
+        // 画面の横幅に合わせてscaleを計算
+        const scale = screenWidth / pdfWidth;
+
         const viewport = page.getViewport({ scale: scale });
 
         const pdf = new jsPDF({
