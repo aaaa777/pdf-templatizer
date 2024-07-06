@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title><!-- title --></title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="script.css">
     <!-- scripts -->
     <style>
         body {
@@ -21,6 +22,18 @@
     </style>
 </head>
 <body>
+    <main>
+        <h1>PDF to Fabric.js</h1>
+        <p>Upload a PDF file to convert it to a Fabric.js canvas.</p>
+        <div class="grid grid-cols-2 md:grid-cols-2">
+            <div class="left-place-holder" style="background-color: blue;">
+                left<!-- left-place-holder -->
+            </div>
+            <div class="right-place-holder" style="background-color: red;">
+                tesuto<!-- right-place-holder -->
+            </div>
+        </div>
+    </main>
     <input type="file" id="pdf-upload" accept="application/pdf">
     <canvas id="fabric-canvas"></canvas>
 

@@ -2,6 +2,9 @@ import { jsPDF } from 'jspdf';
 import * as fabric from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
 
+// import '../static/css/base.css';
+// import './index.css';
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.mjs';
 
 const CMAP_URL = 'assets/cmaps/';

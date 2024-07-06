@@ -9,6 +9,9 @@ import { fileURLToPath } from 'url';
 import { dirname, resolve as pathResolve } from 'path';
 import { terser } from 'rollup-plugin-terser';
 import url from '@rollup/plugin-url';
+import postcss from 'rollup-plugin-postcss';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,6 +30,15 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
     terser(),
     resolve(),
     commonjs(),
+    // postcss({
+    //   extract: true,
+    //   minimize: true,
+    //   modules: true,
+    //   plugins: [
+    //     tailwindcss,
+    //     autoprefixer,
+    //   ],
+    // }),
     html({
       fileName: 'index.html',
       publicPath: '.',
@@ -48,7 +60,7 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
         { src: 'node_modules/pdfjs-dist/build/pdf.worker.mjs', dest: 'dist/assets/js' },
         { src: 'node_modules/pdfjs-dist/cmaps/*', dest: 'dist/assets/cmaps' },
         { src: 'src/static/fonts/*', dest: 'dist/assets/fonts' },
-        { src: 'src/static/css/*', dest: 'dist/assets/css'}
+        // { src: 'src/static/css/*', dest: 'dist/assets/css'}
       ]
     }),
   ]
