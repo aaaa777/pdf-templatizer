@@ -129,19 +129,20 @@ window.savePDF = async function () {
         fabricObjects.forEach(function (obj) {
             if (obj.type === 'i-text') {
                 pdf.setFont('Noto-Sans-JP');
-                pdf.setFontSize((obj.fontSize * obj.scaleY) * PDF_DPI / FABRIC_DPI); // DPIを調整
+                const fontSize = (obj.fontSize * obj.scaleY) * PDF_DPI / FABRIC_DPI; // DPIを調整
+                pdf.setFontSize(fontSize);
                 pdf.setTextColor(obj.fill);
-
+        
                 const options = {
                     angle: obj.angle,
                     align: 'left',
                     baseline: 'top'
                 };
-
+        
                 pdf.text(
                     obj.text,
                     obj.left * PDF_DPI / FABRIC_DPI,  // DPIを調整
-                    (obj.top + (obj.fontSize * obj.scaleY)) * PDF_DPI / FABRIC_DPI, // DPIを調整
+                    obj.top  * PDF_DPI / FABRIC_DPI, 
                     options
                 );
             }
