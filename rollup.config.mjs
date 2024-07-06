@@ -7,6 +7,7 @@ import copy from 'rollup-plugin-copy';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve as pathResolve } from 'path';
+import { terser } from 'rollup-plugin-terser';
 import url from '@rollup/plugin-url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,14 +22,25 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
     format: 'esm',
     name: 'PDFEditor'
   },
+  preserveEntrySignatures: false, // ファイルのエクスポートを最適化
   plugins: [
+    terser(),
     resolve(),
     commonjs(),
     html({
       fileName: 'index.html',
-      publicPath: '../..',
+      publicPath: '.',
       template: ({ attributes, files, meta, publicPath, title }) => {
-        return templateHTML;
+        // JavaScriptファイル用のscriptタグを生成
+        // const scripts = files.js.map(file => `<script type="module" src="${publicPath}/${file.fileName}"></script>`).join('\n');
+
+        // CSSファイル用のlinkタグを生成
+        // const styles = files.css.map(file => `<link rel="stylesheet" href="${publicPath}/${file.fileName}">`).join('\n');
+        
+        // templateHTML内のマーカーをscriptタグで置き換え
+        const finalHTML = templateHTML.replace('<!-- title -->', title);
+        
+        return finalHTML;
       }
     }),
     copy({
@@ -38,7 +50,7 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
         { src: 'src/static/fonts/*', dest: 'dist/assets/fonts' },
         { src: 'src/static/css/*', dest: 'dist/assets/css'}
       ]
-    })
+    }),
   ]
 }));
 
