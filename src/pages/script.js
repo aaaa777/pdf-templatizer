@@ -1,4 +1,3 @@
-// src/script.js
 import { jsPDF } from 'jspdf';
 import * as fabric from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -7,6 +6,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.mjs';
 
 const CMAP_URL = 'assets/cmaps/';
 const CMAP_PACKED = true;
+const FABRIC_DPI = 96; // Fabric.js の DPI
+const PDF_DPI = 72; // jsPDF の DPI
 
 let pdfDoc = null;
 let fabricCanvas;
@@ -61,7 +62,7 @@ function handleFileUpload(e) {
 function renderPage(num) {
     pdfDoc.getPage(num).then(function(page) {
         const scale = 1.5;
-        const viewport = page.getViewport({scale: scale});
+        const viewport = page.getViewport({ scale: scale });
 
         pdfCanvas.height = viewport.height;
         pdfCanvas.width = viewport.width;
@@ -101,7 +102,7 @@ async function loadFont(url) {
     return base64Font;
 }
 
-window.savePDF = async function() {
+window.savePDF = async function () {
     if (!pdfDoc) {
         alert('PDFがアップロードされていません。');
         return;
@@ -109,28 +110,40 @@ window.savePDF = async function() {
 
     const NOTO_SANS_JP = await loadFont('assets/fonts/NotoSansJP-Regular.ttf'); // フォントのURLを指定
 
-    pdfDoc.getPage(1).then(function(page) {
+    pdfDoc.getPage(1).then(function (page) {
         const scale = 1.5;
-        const viewport = page.getViewport({scale: scale});
-        
+        const viewport = page.getViewport({ scale: scale });
+
         const pdf = new jsPDF({
             orientation: viewport.width > viewport.height ? 'l' : 'p',
             unit: 'pt',
-            format: [viewport.width, viewport.height]
+            format: [viewport.width * PDF_DPI / FABRIC_DPI, viewport.height * PDF_DPI / FABRIC_DPI] // DPIを調整
         });
 
         pdf.addFileToVFS("NotoSansJP-Regular.ttf", NOTO_SANS_JP);
         pdf.addFont("NotoSansJP-Regular.ttf", "Noto-Sans-JP", "normal");
 
-        pdf.addImage(pdfCanvas, 'PNG', 0, 0, viewport.width, viewport.height);
+        pdf.addImage(pdfCanvas, 'PNG', 0, 0, viewport.width * PDF_DPI / FABRIC_DPI, viewport.height * PDF_DPI / FABRIC_DPI); // DPIを調整
 
         const fabricObjects = fabricCanvas.getObjects();
-        fabricObjects.forEach(function(obj) {
+        fabricObjects.forEach(function (obj) {
             if (obj.type === 'i-text') {
                 pdf.setFont('Noto-Sans-JP');
-                pdf.setFontSize(obj.fontSize);
+                pdf.setFontSize((obj.fontSize * obj.scaleY) * PDF_DPI / FABRIC_DPI); // DPIを調整
                 pdf.setTextColor(obj.fill);
-                pdf.text(obj.text, obj.left, obj.top + obj.fontSize);
+
+                const options = {
+                    angle: obj.angle,
+                    align: 'left',
+                    baseline: 'top'
+                };
+
+                pdf.text(
+                    obj.text,
+                    obj.left * PDF_DPI / FABRIC_DPI,  // DPIを調整
+                    (obj.top + (obj.fontSize * obj.scaleY)) * PDF_DPI / FABRIC_DPI, // DPIを調整
+                    options
+                );
             }
         });
 
