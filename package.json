@@ -1,0 +1,32 @@
+{
+  "name": "pdf-templatizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "http-server dist -p 8080",
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "fabric": "^6.0.1",
+    "fs": "^0.0.1-security",
+    "jspdf": "^2.5.1",
+    "pdf.js": "^0.1.0",
+    "pdfjs-dist": "^4.4.168"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-html": "^1.0.3",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-url": "^8.0.2",
+    "@web/rollup-plugin-copy": "^0.5.1",
+    "glob": "^10.4.2",
+    "http-server": "^14.1.1",
+    "rollup": "^4.18.0",
+    "rollup-plugin-copy": "^3.5.0"
+  }
+}

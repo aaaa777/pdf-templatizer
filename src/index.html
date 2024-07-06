@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', Arial, sans-serif;
+        }
+        #canvas-container {
+            position: relative;
+        }
+        #pdf-canvas, #fabric-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="pdf-upload" accept="application/pdf">
+    <canvas id="fabric-canvas"></canvas>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
