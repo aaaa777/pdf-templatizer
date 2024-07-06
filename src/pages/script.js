@@ -88,6 +88,15 @@ window.addText = function() {
         fill: '#000000',
         fontSize: 20
     });
+
+    // テキストのリサイズハンドルをいくつか非表示にする
+    text.setControlsVisibility({
+        mt:  false, // 四隅のリサイズハンドルを非表示
+        mb:  false,
+        ml:  false,
+        mr:  false,
+        mtr: false, // 回転ハンドルを非表示
+    });
     fabricCanvas.add(text);
     fabricCanvas.setActiveObject(text);
 }
