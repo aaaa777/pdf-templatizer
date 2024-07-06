@@ -3,9 +3,9 @@ import { jsPDF } from 'jspdf';
 import * as fabric from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.mjs';
 
-const CMAP_URL = 'cmaps/';
+const CMAP_URL = 'assets/cmaps/';
 const CMAP_PACKED = true;
 
 let pdfDoc = null;
@@ -107,7 +107,7 @@ window.savePDF = async function() {
         return;
     }
 
-    const NOTO_SANS_JP = await loadFont('fonts/NotoSansJP-Regular.ttf'); // フォントのURLを指定
+    const NOTO_SANS_JP = await loadFont('assets/fonts/NotoSansJP-Regular.ttf'); // フォントのURLを指定
 
     pdfDoc.getPage(1).then(function(page) {
         const scale = 1.5;

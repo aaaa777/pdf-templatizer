@@ -12,33 +12,31 @@ import url from '@rollup/plugin-url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const templateHTML = readFileSync(pathResolve(__dirname, 'src/index.html'), 'utf8');
+const templateHTML = readFileSync(pathResolve(__dirname, 'src/pages/index.html'), 'utf8');
 
-const configs = glob.sync('src/**.js').map(input => ({ 
+let configs = glob.sync('src/pages/*.js').map(input => ({ 
   input,
   output: {
-    dir: 'dist',
+    dir: 'dist/',
     format: 'esm',
     name: 'PDFEditor'
   },
   plugins: [
-    html({
-      fileName: 'index.html',
-      publicPath: './',
-      template: () => templateHTML
-    }),
-    url({
-      include: ['**/*.ttf'],
-      limit: 0, // ファイルサイズの制限を設定
-      emitFiles: true,
-    }),
     resolve(),
     commonjs(),
+    html({
+      fileName: 'index.html',
+      publicPath: '../..',
+      template: ({ attributes, files, meta, publicPath, title }) => {
+        return templateHTML;
+      }
+    }),
     copy({
       targets: [
-        { src: 'node_modules/pdfjs-dist/build/pdf.worker.mjs', dest: 'dist' },
-        { src: 'node_modules/pdfjs-dist/cmaps/*', dest: 'dist/cmaps' },
-        { src: 'src/fonts/*', dest: 'dist/fonts' },
+        { src: 'node_modules/pdfjs-dist/build/pdf.worker.mjs', dest: 'dist/assets/js' },
+        { src: 'node_modules/pdfjs-dist/cmaps/*', dest: 'dist/assets/cmaps' },
+        { src: 'src/static/fonts/*', dest: 'dist/assets/fonts' },
+        { src: 'src/static/css/*', dest: 'dist/assets/css'}
       ]
     })
   ]
