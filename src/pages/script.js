@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const saveButton = document.getElementById('pdf-save');
     saveButton.textContent = 'PDF保存';
-    saveButton.onclick = savePDF;
+    saveButton.onclick = onPressSavePDF;
     // document.body.appendChild(saveButton);
 
     const addTextButton = document.getElementById('pdf-add-text');
@@ -98,19 +98,11 @@ function renderPage(num) {
 
         // Fabric.jsのキャンバスのズーム処理
         fabricCanvas.setZoom(canvasScale);
-        fabricCanvas.setWidth(originalViewport.width * canvasScale);
-        fabricCanvas.setHeight(originalViewport.height * canvasScale);
 
-        // オブジェクトの位置を調整
-        fabricCanvas.getObjects().forEach((obj) => {
-            obj.set({
-                scaleX: obj.scaleX,
-                scaleY: obj.scaleY,
-                left: obj.left * canvasScale,
-                top: obj.top * canvasScale
-            });
+        fabricCanvas.getObjects().forEach(obj => {
+            obj.setCoords();
         });
-
+    
         fabricCanvas.renderAll();
     });
 }
@@ -145,18 +137,23 @@ async function loadFont(url) {
     );
     return base64Font;
 }
-
-window.savePDF = async function () {
+window.onPressSavePDF = async function() {
     if (!pdfDoc) {
         alert('PDFがアップロードされていません。');
         return;
     }
+    canvasScale = 1; // ズームをリセット
+    renderPage(currentPage); // ページをリセット
+    
+    await exportPDF();
+}
 
+async function exportPDF() {
     const NOTO_SANS_JP = await loadFont('assets/fonts/NotoSansJP-Regular.ttf'); // フォントのURLを指定
 
-    pdfDoc.getPage(1).then(function (page) {
+    pdfDoc.getPage(currentPage).then(function (page) {
         const scale = canvasScale;
-        const viewport = page.getViewport({ scale: scale });
+        const viewport = page.getViewport({ scale: 1 });
 
         const pdf = new jsPDF({
             orientation: viewport.width > viewport.height ? 'l' : 'p',
@@ -186,25 +183,25 @@ window.savePDF = async function () {
                 pdf.text(
                     obj.text,
                     obj.left * PDF_DPI / FABRIC_DPI,  // DPIを調整
-                    obj.top  * PDF_DPI / FABRIC_DPI, 
+                    obj.top  * PDF_DPI / FABRIC_DPI,  // DPIを調整
                     options
                 );
             }
         });
 
-        pdf.save('edited.pdf');
+        pdf.save('output.pdf');
     });
 }
 
 // zoomIn関数の修正
 window.zoomIn = function() {
-    canvasScale *= 1.1; // 10%拡大
+    canvasScale += 0.1; // 10%拡大
     renderPage(currentPage);
 };
 
 // zoomOut関数の修正
 window.zoomOut = function() {
-    canvasScale *= 0.9; // 10%縮小
+    canvasScale -= 0.1; // 10%縮小
     renderPage(currentPage);
 };
 

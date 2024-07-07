@@ -7,6 +7,7 @@ import copy from 'rollup-plugin-copy';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve as pathResolve } from 'path';
+import json from '@rollup/plugin-json';
 import { terser } from 'rollup-plugin-terser';
 import url from '@rollup/plugin-url';
 import postcss from 'rollup-plugin-postcss';
@@ -28,6 +29,7 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
   preserveEntrySignatures: false, // ファイルのエクスポートを最適化
   plugins: [
     // terser(),
+    json(),
     resolve(),
     commonjs(),
     // postcss({
@@ -53,7 +55,9 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
         // const styles = files.css.map(file => `<link rel="stylesheet" href="${publicPath}/${file.fileName}">`).join('\n');
         
         // templateHTML内のマーカーをscriptタグで置き換え
-        const finalHTML = templateHTML.replace('<!-- title -->', title);
+        const finalHTML = templateHTML
+          .replace('<!-- title -->', title)
+          .replace('<!-- build info -->', new Date().toTimeString());
         
         return finalHTML;
       }
