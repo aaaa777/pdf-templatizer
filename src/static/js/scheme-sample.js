@@ -1,6 +1,6 @@
 export const json = {
-    "name": "Schema Sample",
-    "description": "This is a sample schema.",
+    "name": "Scheme Sample",
+    "description": "This is a sample scheme.",
     "inputs": [
         {
             "name": "タイトル",

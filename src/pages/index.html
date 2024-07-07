@@ -122,10 +122,53 @@
                         <button id="zoom-out">縮小</button>
                     </div>
                 </div>
+                <!-- 右ペインは操作用 -->
                 <div class="editor-content p-4">
-                    <!-- PDFを操作するための要素 -->
-                    <input type="file" id="pdf-upload" accept="application/pdf" class="block w-full mb-4">
-                    <button id="pdf-add-text" class="block w-full mb-2">テキストを追加</button>
+                    <div class="editor-index grid grid-cols-3">
+                        <div>
+                            <button id="index-pdf-selector">PDFを選択</button>
+                        </div>
+                        <div>
+                            <button id="index-scheme-selector">テンプレートを選択</button>
+                        </div>
+                        <div>
+                            <button id="index-data-selector">データを入力</button>
+                        </div>
+                    </div>
+                    <div class="editor-tabs">
+                        <div id="tab-pdf-selector" class="editor-tab hidden">
+                            <!-- PDFを選択するページ -->
+                            <input type="file" id="pdf-upload" accept="application/pdf" class="block w-full mb-4">
+                        </div>
+                        <div id="tab-scheme-selector" class="editor-tab">
+                            <!-- テンプレートを操作するページ -->
+                            <div class="scheme-import-server">
+                                <input type="radio" id="scheme-edit" name="scheme-select-mode" value="edit">
+                                保存したテンプレートを使用(要ログイン)
+                                <br />
+                                <div class="border-gray-200"> -- せんたくしてください --</div>
+                                <hr />
+                            </div>
+                            <div class="scheme-import-client">
+                                <input type="radio" id="scheme-import" name="scheme-select-mode" value="import" checked>
+                                アップロードしたテンプレートを利用
+                                <br />
+                                テンプレートを選択
+                                <input type="file" id="scheme-upload" accept="application/json" class="block w-full mb-2">
+                                <input type="checkbox" id="scheme-edit-mode" name="scheme-edit-mode" value="edit">
+                                テンプレートを編集する
+                            </div>
+                            <div class="scheme-edit">
+                                <button id="pdf-add-text" class="block w-full mb-2">テキストを追加</button>
+                            </div>
+                        </div>
+                        <div id="tab-data-selector" class="editor-tab hidden">
+                            <!-- データを入力するページ -->
+                            Googleスプレッドシートを利用<br />
+                            CSVファイルを利用<br />
+                            データを手入力<br />
+                        </div>
+                    </div>
                     <button id="pdf-save" class="block w-full">PDFを保存</button>
                 </div>
                 <div>

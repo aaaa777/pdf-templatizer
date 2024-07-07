@@ -205,6 +205,23 @@ window.zoomOut = function() {
     renderPage(currentPage);
 };
 
+window.clickTab = function(activateTabId) {
+    console.log(activateTabId);
+    const tabs = document.getElementsByClassName('editor-tab');
+    for (let i = 0; i < tabs.length; i++) {
+        const tab = tabs[i];
+        console.log(tab)
+        if (tab.id === activateTabId) {
+            tab.classList.remove('hidden');
+        } else {
+            tab.classList.add('hidden');
+        }
+    }
+}
+
 // HTMLに拡大・縮小ボタンを追加し、イベントリスナーを設定
-document.getElementById('zoom-in').addEventListener('click', zoomIn);
+document.getElementById('zoom-in' ).addEventListener('click', zoomIn);
 document.getElementById('zoom-out').addEventListener('click', zoomOut);
+document.getElementById('index-pdf-selector'   ).addEventListener('click', () => clickTab("tab-pdf-selector"));
+document.getElementById('index-scheme-selector').addEventListener('click', () => clickTab("tab-scheme-selector"));
+document.getElementById('index-data-selector'  ).addEventListener('click', () => clickTab("tab-data-selector"));
