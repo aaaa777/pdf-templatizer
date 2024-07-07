@@ -7,23 +7,34 @@ on:
 
 jobs:
   build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-
-    # - name: Setup Node.js
-    #   uses: actions/setup-node@v2
-    #   with:
-    #     node-version: '20'  # 使用するNode.jsのバージョン
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build
-      run: npm run build  # ビルドコマンド
-
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.1.4
-      with:
-        branch: gh-pages  # GitHub Pages用のブランチ
-        folder: dist  # デプロイするフォルダー
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '20'  # 使用するNode.jsのバージョン
+  
+      - name: Install dependencies
+        run: npm install
+  
+      - name: Build
+        run: npm run build  # ビルドコマンド
+  
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: './dist'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
