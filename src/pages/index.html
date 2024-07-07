@@ -22,7 +22,7 @@
         </style>
 </head>
 <body>
-    <main>
+    <main class="h-screen flex flex-col">
         <header class="flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-neutral-800 dark:border-neutral-700">
             <nav class="relative max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
               <div class="flex items-center justify-between">
@@ -97,17 +97,17 @@
                 </div>
             </nav>
         </header>
-        <div class="container mx-auto p-4">
+        <div class="container mx-auto p-4 grow">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="pdf-viewer bg-gray-200 p-4">
+                <div class="pdf-viewer bg-gray-200 p-4 w-full aspect-[3/4] overflow-hidden">
                     <!-- PDF画像を表示するための要素 -->
-                    <canvas id="fabric-canvas" class="w-full"></canvas>
+                    <canvas id="fabric-canvas" class="w-full h-full"></canvas>
                 </div>
                 <div class="editor-content p-4">
                     <!-- PDFを操作するための要素 -->
-                    <input type="file" id="pdf-upload" accept="application/pdf">
-                    <button id="pdf-add-text">テキストを追加</button>
-                    <button id="pdf-save">PDFを保存</button>
+                    <input type="file" id="pdf-upload" accept="application/pdf" class="block w-full mb-4">
+                    <button id="pdf-add-text" class="block w-full mb-2">テキストを追加</button>
+                    <button id="pdf-save" class="block w-full">PDFを保存</button>
                 </div>
             </div>
         </div>
