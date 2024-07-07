@@ -1,6 +1,9 @@
 import { jsPDF } from 'jspdf';
 import * as fabric from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
+import * as PCE from '../static/js/pdf-canvas-editor';
+// import '../static/css/base.css';
+// import './index.css';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/js/pdf.worker.mjs';
 
@@ -12,6 +15,9 @@ const PDF_DPI = 72; // jsPDF の DPI
 let pdfDoc = null;
 let fabricCanvas;
 let pdfCanvas;
+let canvasScale = 1;
+let currentPage = 1; // 現在のページ番号を追跡
+let totalPages = 1;  // PDFの総ページ数
 
 document.addEventListener('DOMContentLoaded', function() {
     fabricCanvas = new fabric.Canvas('fabric-canvas');
@@ -24,17 +30,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     pdfUpload.addEventListener('change', handleFileUpload);
 
-    const saveButton = document.createElement('button');
+    const saveButton = document.getElementById('pdf-save');
     saveButton.textContent = 'PDF保存';
-    saveButton.onclick = savePDF;
-    document.body.appendChild(saveButton);
+    saveButton.onclick = onPressSavePDF;
+    // document.body.appendChild(saveButton);
 
-    const addTextButton = document.createElement('button');
+    const addTextButton = document.getElementById('pdf-add-text');
     addTextButton.textContent = 'テキスト追加';
     addTextButton.onclick = addText;
-    document.body.appendChild(addTextButton);
+    // document.body.appendChild(addTextButton);
 });
 
+// handleFileUpload関数の修正
 function handleFileUpload(e) {
     const file = e.target.files[0];
     if (file.type !== 'application/pdf') {
@@ -46,37 +53,57 @@ function handleFileUpload(e) {
     fileReader.onload = function() {
         const typedarray = new Uint8Array(this.result);
 
-        // CMap設定を追加
         pdfjsLib.getDocument({
             data: typedarray,
             cMapUrl: CMAP_URL,
             cMapPacked: CMAP_PACKED
         }).promise.then(function(pdf) {
             pdfDoc = pdf;
-            renderPage(1);
+            totalPages = pdf.numPages; // 総ページ数を保存
+            currentPage = 1; // 最初のページを表示
+            renderPage(currentPage);
         });
     };
     fileReader.readAsArrayBuffer(file);
 }
 
-function renderPage(num) {
-    pdfDoc.getPage(num).then(function(page) {
-        const scale = 1.5;
-        const viewport = page.getViewport({ scale: scale });
 
-        pdfCanvas.height = viewport.height;
-        pdfCanvas.width = viewport.width;
+// renderPage関数の修正
+function renderPage(num) {
+    if (num < 1 || num > totalPages) {
+        console.error('無効なページ番号です');
+        return;
+    }
+
+    currentPage = num; // 現在のページ番号を更新
+
+    pdfDoc.getPage(num).then(function(page) {
+        const originalViewport = page.getViewport({ scale: 1 });
+        const scaledViewport = page.getViewport({ scale: canvasScale });
+
+        pdfCanvas.height = scaledViewport.height;
+        pdfCanvas.width = scaledViewport.width;
 
         const renderContext = {
             canvasContext: pdfCanvas.getContext('2d'),
-            viewport: viewport
+            viewport: scaledViewport
         };
+
         page.render(renderContext);
 
         fabricCanvas.setDimensions({
-            width: viewport.width,
-            height: viewport.height
+            width: scaledViewport.width,
+            height: scaledViewport.height
         });
+
+        // Fabric.jsのキャンバスのズーム処理
+        fabricCanvas.setZoom(canvasScale);
+
+        fabricCanvas.getObjects().forEach(obj => {
+            obj.setCoords();
+        });
+    
+        fabricCanvas.renderAll();
     });
 }
 
@@ -110,18 +137,23 @@ async function loadFont(url) {
     );
     return base64Font;
 }
-
-window.savePDF = async function () {
+window.onPressSavePDF = async function() {
     if (!pdfDoc) {
         alert('PDFがアップロードされていません。');
         return;
     }
+    canvasScale = 1; // ズームをリセット
+    renderPage(currentPage); // ページをリセット
+    
+    await exportPDF();
+}
 
+async function exportPDF() {
     const NOTO_SANS_JP = await loadFont('assets/fonts/NotoSansJP-Regular.ttf'); // フォントのURLを指定
 
-    pdfDoc.getPage(1).then(function (page) {
-        const scale = 1.5;
-        const viewport = page.getViewport({ scale: scale });
+    pdfDoc.getPage(currentPage).then(function (page) {
+        const scale = canvasScale;
+        const viewport = page.getViewport({ scale: 1 });
 
         const pdf = new jsPDF({
             orientation: viewport.width > viewport.height ? 'l' : 'p',
@@ -151,12 +183,43 @@ window.savePDF = async function () {
                 pdf.text(
                     obj.text,
                     obj.left * PDF_DPI / FABRIC_DPI,  // DPIを調整
-                    obj.top  * PDF_DPI / FABRIC_DPI, 
+                    obj.top  * PDF_DPI / FABRIC_DPI,  // DPIを調整
                     options
                 );
             }
         });
 
-        pdf.save('edited.pdf');
+        pdf.save('output.pdf');
     });
 }
+
+// zoomIn関数の修正
+window.zoomIn = function() {
+    canvasScale += 0.1; // 10%拡大
+    renderPage(currentPage);
+};
+
+// zoomOut関数の修正
+window.zoomOut = function() {
+    canvasScale -= 0.1; // 10%縮小
+    renderPage(currentPage);
+};
+
+window.clickTab = function(activateTabId) {
+    const tabs = document.getElementsByClassName('editor-tab');
+    for (let i = 0; i < tabs.length; i++) {
+        const tab = tabs[i];
+        if (tab.id === activateTabId) {
+            tab.classList.remove('hidden');
+        } else {
+            tab.classList.add('hidden');
+        }
+    }
+}
+
+// HTMLに拡大・縮小ボタンを追加し、イベントリスナーを設定
+document.getElementById('zoom-in' ).addEventListener('click', zoomIn);
+document.getElementById('zoom-out').addEventListener('click', zoomOut);
+document.getElementById('index-pdf-selector'   ).addEventListener('click', () => clickTab("tab-pdf-selector"));
+document.getElementById('index-scheme-selector').addEventListener('click', () => clickTab("tab-scheme-selector"));
+document.getElementById('index-data-selector'  ).addEventListener('click', () => clickTab("tab-data-selector"));
