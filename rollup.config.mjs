@@ -27,7 +27,7 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
   },
   preserveEntrySignatures: false, // ファイルのエクスポートを最適化
   plugins: [
-    terser(),
+    // terser(),
     resolve(),
     commonjs(),
     // postcss({
