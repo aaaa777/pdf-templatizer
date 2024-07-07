@@ -206,11 +206,9 @@ window.zoomOut = function() {
 };
 
 window.clickTab = function(activateTabId) {
-    console.log(activateTabId);
     const tabs = document.getElementsByClassName('editor-tab');
     for (let i = 0; i < tabs.length; i++) {
         const tab = tabs[i];
-        console.log(tab)
         if (tab.id === activateTabId) {
             tab.classList.remove('hidden');
         } else {

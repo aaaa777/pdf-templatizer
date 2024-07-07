@@ -57,6 +57,7 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
         // templateHTML内のマーカーをscriptタグで置き換え
         const finalHTML = templateHTML
           .replace('<!-- title -->', title)
+          .replace('<!-- header logo -->', title)
           .replace('<!-- build info -->', new Date().toTimeString());
         
         return finalHTML;
