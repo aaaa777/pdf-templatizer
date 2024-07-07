@@ -43,6 +43,9 @@ let configs = glob.sync('src/pages/*.js').map(input => ({
       fileName: 'index.html',
       publicPath: '.',
       template: ({ attributes, files, meta, publicPath, title }) => {
+
+        title = 'PDF Editor';
+
         // JavaScriptファイル用のscriptタグを生成
         // const scripts = files.js.map(file => `<script type="module" src="${publicPath}/${file.fileName}"></script>`).join('\n');
 

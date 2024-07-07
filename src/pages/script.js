@@ -27,15 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     pdfUpload.addEventListener('change', handleFileUpload);
 
-    const saveButton = document.createElement('button');
+    const saveButton = document.getElementById('pdf-save');
     saveButton.textContent = 'PDF保存';
     saveButton.onclick = savePDF;
-    document.body.appendChild(saveButton);
+    // document.body.appendChild(saveButton);
 
-    const addTextButton = document.createElement('button');
+    const addTextButton = document.getElementById('pdf-add-text');
     addTextButton.textContent = 'テキスト追加';
     addTextButton.onclick = addText;
-    document.body.appendChild(addTextButton);
+    // document.body.appendChild(addTextButton);
 });
 
 function handleFileUpload(e) {
