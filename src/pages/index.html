@@ -11,6 +11,9 @@
         body {
             font-family: 'Noto Sans JP', Arial, sans-serif;
         }
+        #pdf-viewer {
+            position: relative;
+        }
         #canvas-container {
             position: relative;
         }
@@ -18,6 +21,15 @@
             position: absolute;
             top: 0;
             left: 0;
+        }
+        #canvas-controll {
+            position: absolute;
+            /* left: 39%;
+            margin: -60px 0; */
+            bottom: 0;
+            right: 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
         }
         </style>
 </head>
@@ -99,15 +111,20 @@
         </header>
         <div class="container mx-auto p-4 grow">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="pdf-viewer bg-gray-200 p-4 w-full aspect-[3/4] overflow-hidden">
-                    <!-- PDF画像を表示するための要素 -->
-                    <canvas id="fabric-canvas" class="w-full h-full"></canvas>
+                <div class="pdf-viewer p-4 w-full ">
+                    <div class="pdf-bg bg-gray-200 aspect-[3/4] overflow-scroll">
+
+                        <!-- PDF画像を表示するための要素 -->
+                        <canvas id="fabric-canvas" class="w-full h-full"></canvas>
+                    </div>
+                    <div id="canvas-controll">
+                        <button id="zoom-in">拡大</button>
+                        <button id="zoom-out">縮小</button>
+                    </div>
                 </div>
                 <div class="editor-content p-4">
                     <!-- PDFを操作するための要素 -->
                     <input type="file" id="pdf-upload" accept="application/pdf" class="block w-full mb-4">
-                    <button id="zoom-in">拡大</button>
-                    <button id="zoom-out">縮小</button>
                     <button id="pdf-add-text" class="block w-full mb-2">テキストを追加</button>
                     <button id="pdf-save" class="block w-full">PDFを保存</button>
                 </div>
