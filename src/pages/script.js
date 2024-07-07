@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import * as fabric from 'fabric';
 import * as pdfjsLib from 'pdfjs-dist';
-
+import * as PCE from '../static/js/pdf-canvas-editor';
 // import '../static/css/base.css';
 // import './index.css';
 
