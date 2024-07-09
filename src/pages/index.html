@@ -112,6 +112,9 @@
         <div class="container mx-auto p-4 grow">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="pdf-viewer p-4 w-full ">
+                    <div>
+                        <h2 class="text-2xl font-bold py-1">プレビュー</h2>
+                    </div>
                     <div class="pdf-bg bg-gray-200 aspect-[3/4] max-h-[80vh] overflow-scroll">
 
                         <!-- PDF画像を表示するための要素 -->
@@ -124,15 +127,15 @@
                 </div>
                 <!-- 右ペインは操作用 -->
                 <div class="editor-content p-4">
-                    <div class="editor-index grid grid-cols-3">
-                        <div>
-                            <button id="index-pdf-selector">PDFを選択</button>
+                    <div class="editor-indexes grid grid-cols-3 divide-x mb-2">
+                        <div class="flex">
+                            <button id="index-pdf-selector"    class="flex-1 py-1">① PDF選択</button>
                         </div>
-                        <div>
-                            <button id="index-scheme-selector">テンプレートを選択</button>
+                        <div class="flex">
+                            <button id="index-scheme-selector" class="flex-1 py-1">② ﾃﾝﾌﾟﾚ選択</button>
                         </div>
-                        <div>
-                            <button id="index-data-selector">データを入力</button>
+                        <div class="flex">
+                            <button id="index-data-selector"   class="flex-1 py-1">③ ﾃﾞｰﾀ入力</button>
                         </div>
                     </div>
                     <div class="editor-tabs">
